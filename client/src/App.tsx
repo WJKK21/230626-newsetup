@@ -1,3 +1,4 @@
+import React from "react";
 import KakaoMapEx1 from "./KakaoMapEx1";
 
 function App() {

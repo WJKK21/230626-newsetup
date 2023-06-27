@@ -1,24 +1,65 @@
-import React, { useEffect} from react;
+import React, { useEffect } from "react";
+import navermaps from "@react-navermaps/api";
 
-const { kakao } = window;
- 
-function kakao() {
+function NaverMap() {
   useEffect(() => {
-          const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 3,
-      };
+    const mapOptions = {
+      center: new navermaps.LatLng(37.3595704, 127.105399),
+      zoom: 10,
+      mapTypeControl: true,
+      mapTypeControlOptions: {
+        style: navermaps.MapTypeControlStyle.DROPDOWN,
+      },
+    };
 
-      const map = new kakao.maps.Map(container, options);
-  }, [])
+    const map = new navermaps.Map("map", mapOptions);
+
+    const trafficLayer = new navermaps.TrafficLayer({
+      interval: 300000,
+    });
+
+    const toggleTrafficLayer = () => {
+      if (trafficLayer.getMap()) {
+        trafficLayer.setMap(null);
+      } else {
+        trafficLayer.setMap(map);
+      }
+    };
+
+    const toggleAutoRefresh = (e) => {
+      const checked = e.target.checked;
+      if (checked) {
+        trafficLayer.startAutoRefresh();
+      } else {
+        trafficLayer.endAutoRefresh();
+      }
+    };
+
+    navermaps.Event.once(map, "init_stylemap", () => {
+      trafficLayer.setMap(map);
+    });
+
+    const btn = document.getElementById("traffic");
+    btn.addEventListener("click", toggleTrafficLayer);
+
+    const autoRefreshCheckbox = document.getElementById("autorefresh");
+    autoRefreshCheckbox.addEventListener("change", toggleAutoRefresh);
+
+    return () => {
+      btn.removeEventListener("click", toggleTrafficLayer);
+      autoRefreshCheckbox.removeEventListener("change", toggleAutoRefresh);
+    };
+  }, []);
+
   return (
-    <div id='map' style={{
-      width: '500px' ,
-      heigth: '500px'
-    }}>
+    <div style={{ width: "100%", height: "400px" }}>
+      <div id="map" style={{ width: "100%", height: "100%" }}></div>
+      <button id="traffic">Toggle Traffic Layer</button>
+      <label>
+        <input id="autorefresh" type="checkbox" /> Auto Refresh
+      </label>
     </div>
-  )
+  );
 }
 
-export default kakao;
+export default NaverMap;
