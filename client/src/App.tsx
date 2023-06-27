@@ -1,10 +1,11 @@
 import React from "react";
-import KakaoMapEx1 from "./KakaoMapEx1";
+import "./App.css";
+import NaverMapEx1 from "./naverMapEx1";
 
 function App() {
   return (
     <div className="App">
-      <KakaoMapEx1 />
+      <NaverMapEx1 />
     </div>
   );
 }

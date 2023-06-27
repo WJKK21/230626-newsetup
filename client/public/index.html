@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>Naver 지도 시작하기</title>
+    <meta charset="UTF-8" />
+    <title>현재 위치 표시</title>
+    <style>
+      #map {
+        width: 100%;
+        height: 1000px;
+      }
+    </style>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=l4jajlabuj"></script>
   </head>
   <body>
-    <div id="map" style="width: 500px; height: 400px"></div>
-    <script
-      type="text/javascript"
-      src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientid=l4jajlabuj&submodules=geocoder"
-    ></script>
+    <h1>현재 위치 표시</h1>
+    <div id="map"></div>
     <script>
-      var container = document.getElementById("map");
-      var options = {
-        center: new naver.maps.LatLng(33.450701, 126.570667),
-        zoom: 10,
-      };
-
-      var map = new naver.maps.Map(container, options);
+      function initMap() {
+        // 지도 생성
+        var mapOptions = {
+          center: new naver.maps.LatLng(37.5665, 126.978), // 초기 지도 중심 위치 (서울)
+          zoom: 15, // 초기 줌 레벨
+        };
+        var map = new naver.maps.Map("map", mapOptions);
+        // 현재 위치 가져오기
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude; // 위도
+            var lng = position.coords.longitude; // 경도
+            var currentPosition = new naver.maps.LatLng(lat, lng);
+            // 현재 위치 마커 생성
+            var marker = new naver.maps.Marker({
+              position: currentPosition,
+              map: map,
+            });
+            // 지도 중심 위치를 현재 위치로 설정
+            map.setCenter(currentPosition);
+          });
+        } else {
+          alert("Geolocation을 지원하지 않는 브라우저입니다.");
+        }
+      }
+      // initMap 함수 호출
+      window.onload = initMap;
     </script>
   </body>
 </html>
